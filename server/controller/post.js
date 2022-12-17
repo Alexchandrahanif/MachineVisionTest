@@ -102,11 +102,15 @@ class Controller {
   }
 
   // LIKE OR DISLIKE
-  static async likes(res, res, next) {
+  static async likes(req, res, next) {
     try {
+      const { id } = req.params;
       const { input } = req.body;
 
-      const { id } = req.params;
+      const dataPost = await Post.findByPk(id);
+      if (!dataPost) {
+        throw { name: "Data Post Not Found", id: id };
+      }
       if (input === "like") {
         Post.increment(
           {
