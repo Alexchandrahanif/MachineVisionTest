@@ -1,5 +1,9 @@
 # MachineVisionTest
 
+Mulai jumat,17-12-2022 s/d Rabu,22-12-2022
+
+## mulai kerjakan sabtu : 18-Desember-2022
+
 API :
 
 1. Login
@@ -19,3 +23,5 @@ API :
    - delete post
    - edit post
 6. logout
+
+## catatan :

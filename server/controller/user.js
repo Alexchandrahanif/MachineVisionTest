@@ -1,4 +1,8 @@
-const { comparePassword, createAccessToken } = require("../helper/helper");
+const {
+  comparePassword,
+  createAccessToken,
+  hashingPassword,
+} = require("../helper/helper");
 const { User } = require("../models/index");
 
 class Controller {
@@ -139,6 +143,42 @@ class Controller {
       res.status(200).json({
         message: `Delete User with id ${id} successfully`,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Change Password
+  static async changePassword(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { password, password1, password2 } = req.body;
+
+      const dataUser = await User.findByPk(id);
+
+      if (!comparePassword(password, dataUser.password)) {
+        throw { name: "Invalid Password" };
+      }
+
+      if (password1 !== password2) {
+        throw { name: "Password Not Match" };
+      }
+
+      const dataPassword = await User.update(
+        {
+          password: hashingPassword(password),
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+
+      res.status(200),
+        json({
+          message: `Change password user with id ${id} successfullly`,
+        });
     } catch (error) {
       next(error);
     }
