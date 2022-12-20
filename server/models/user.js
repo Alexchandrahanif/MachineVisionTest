@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Post, { foreignKey: "UserId" });
     }
   }
   User.init(
@@ -29,30 +30,30 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: {
-          msg: "Email must be unique",
-        },
         validate: {
           notEmpty: {
             msg: "Username is required",
           },
           notNull: {
             msg: "Username is required",
-          },
-          isEmail: {
-            msg: "Must format Email",
           },
         },
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: {
+          msg: "Email must be unique",
+        },
         validate: {
           notEmpty: {
             msg: "Email is required",
           },
           notNull: {
             msg: "Email is required",
+          },
+          isEmail: {
+            msg: "Must format Email",
           },
         },
       },

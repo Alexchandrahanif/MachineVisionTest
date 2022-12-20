@@ -1,9 +1,6 @@
-const Controller = require("../controller/user");
-
 const userRouter = require("express").Router();
 
-userRouter.post("/register", Controller.register);
-userRouter.post("/login", Controller.login);
+const Controller = require("../controller/user");
 
 userRouter.get("/", Controller.getUsers);
 userRouter.get("/:id", Controller.getUser);

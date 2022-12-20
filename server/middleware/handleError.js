@@ -29,9 +29,19 @@ const handeError = (err, req, res, next) => {
   } else if (err.name === "Forbidden") {
     code = 403;
     message = "You are not authorized";
+  } else if (err.name === "Data User Not Found") {
+    (code = 400), (message = `Data User With Id ${err.id} Not Found`);
+  } else if (err.name === "Password Not Match") {
+    (code = 400), (message = "Password Not Match");
+  } else if (err.name === "Invalid Password") {
+    (code = 400), (message = "Invalid Password");
+  } else if (err.name === "Data Post Not Found") {
+    (code = 400), (message = `Data Post With Id ${err.id} Not Found`);
   }
   res.status(code).json({
+    success: false,
     message: message,
+    data: null,
   });
 };
 

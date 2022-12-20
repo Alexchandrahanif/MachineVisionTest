@@ -9,7 +9,6 @@ const authentication = async (req, res, next) => {
     if (!dataUser) {
       throw { name: "Invalid access_token" };
     }
-
     req.user = {
       id: dataUser.id,
       email: dataUser.email,

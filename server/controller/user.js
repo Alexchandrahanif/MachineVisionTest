@@ -18,22 +18,35 @@ class Controller {
     }
   }
 
-  // Register User
+  // Register User //Done
   static async register(req, res, next) {
     try {
-      let { email, password } = req.body;
-      const dataUser = await User.create({ email, password });
+      let { name, username, email, password, photo } = req.body;
+      const dataUser = await User.create({
+        name,
+        username,
+        email,
+        password,
+        photo,
+      });
 
       res.status(201).json({
-        id: dataUser.id,
-        email: dataUser.email,
+        success: true,
+        message: "Your account has been succesfully created",
+        data: {
+          name: dataUser.name,
+          username: dataUser.username,
+          email: dataUser.email,
+          photo: dataUser.photo,
+        },
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
 
-  // Login User
+  // Login User //Done
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -66,14 +79,31 @@ class Controller {
       const access_token = createAccessToken(payload);
 
       res.status(200).json({
-        access_token,
+        success: true,
+        message: "Successfully logged in",
+        data: {
+          token: access_token,
+        },
       });
     } catch (error) {
       next(error);
     }
   }
 
-  // Get USer
+  // Logout User //Done
+  static async logout(req, res, next) {
+    try {
+      res.status(200).json({
+        success: true,
+        message: "Successfully logout",
+        data: null,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Get User
   static async getUsers(req, res, next) {
     try {
       const dataUser = await User.findAll();
@@ -86,19 +116,28 @@ class Controller {
     }
   }
 
-  // Get User By Id
+  // Get User By Id //Done
   static async getUser(req, res, next) {
     try {
       const { id } = req.params;
       const dataUser = await User.findByPk(id);
-      if (!data) {
+      if (!dataUser) {
         throw { name: "Data User Not Found", id: id };
       }
       res.status(200).json({
-        statusCode: 200,
-        data: dataUser,
+        success: true,
+        message: "Successfully Get User",
+        data: {
+          name: dataUser.name,
+          username: dataUser.username,
+          email: dataUser.email,
+          photo: dataUser.photo,
+          createdAt: dataUser.createdAt,
+          updatedAt: dataUser.updatedAt,
+        },
       });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -126,6 +165,20 @@ class Controller {
           },
         }
       );
+
+      const dataBaru = await User.findByPk(id);
+      res.status(200).json({
+        success: true,
+        message: "Successfully update User",
+        data: {
+          name: dataBaru.name,
+          username: dataBaru.username,
+          email: dataBaru.email,
+          photo: dataBaru.photo,
+          createdAt: dataBaru.createdAt,
+          updatedAt: dataBaru.updatedAt,
+        },
+      });
     } catch (error) {
       next(error);
     }
@@ -151,22 +204,28 @@ class Controller {
   // Change Password
   static async changePassword(req, res, next) {
     try {
+      console.log("okeu");
       const { id } = req.params;
-      const { password, password1, password2 } = req.body;
+      const { oldPassword, newPassword, confirmNewPassword } = req.body;
+      console.log(id);
+      console.log(req.body);
 
       const dataUser = await User.findByPk(id);
+      console.log("sebelum komper");
 
-      if (!comparePassword(password, dataUser.password)) {
+      console.log(dataUser);
+      if (!comparePassword(oldPassword, dataUser.password)) {
         throw { name: "Invalid Password" };
       }
 
-      if (password1 !== password2) {
+      console.log("komper sukses");
+      if (newPassword !== confirmNewPassword) {
         throw { name: "Password Not Match" };
       }
 
       const dataPassword = await User.update(
         {
-          password: hashingPassword(password),
+          password: hashingPassword(newPassword),
         },
         {
           where: {
@@ -175,10 +234,21 @@ class Controller {
         }
       );
 
-      res.status(200),
-        json({
-          message: `Change password user with id ${id} successfullly`,
-        });
+      res.status(200).json({
+        success: true,
+        message: `Successfullly Change Password`,
+        data: null,
+      });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  //Upload image
+  static async image(req, res, next) {
+    try {
+      const { file } = req.body;
     } catch (error) {
       next(error);
     }
