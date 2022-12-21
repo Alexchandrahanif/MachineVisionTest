@@ -93,6 +93,7 @@ class Controller {
   // Logout User //Done
   static async logout(req, res, next) {
     try {
+      console.log("berhasil logout");
       res.status(200).json({
         success: true,
         message: "Successfully logout",
@@ -205,7 +206,7 @@ class Controller {
   static async changePassword(req, res, next) {
     try {
       console.log("okeu");
-      const { id } = req.params;
+      const { id } = req.user;
       const { oldPassword, newPassword, confirmNewPassword } = req.body;
       console.log(id);
       console.log(req.body);

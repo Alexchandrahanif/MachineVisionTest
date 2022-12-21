@@ -12,7 +12,7 @@ const handeError = (err, req, res, next) => {
       message.push(el.message);
     });
   } else if (err.name === "Invalid email/password") {
-    code = 401;
+    code = 400;
     message = "Invalid email/password";
   } else if (err.name === "Invalid access_token") {
     code = 401;
