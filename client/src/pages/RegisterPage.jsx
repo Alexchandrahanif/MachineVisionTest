@@ -20,12 +20,13 @@ function RegisterPage() {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     if (e.target.files && e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
       console.log(e.target);
       let img = e.target.files[0];
       console.log(img, "igggggg");
       setInputRegister({
         ...input,
-        [name]: URL.createObjectURL(img),
+        [name]: img,
       });
     } else {
       setInputRegister({
@@ -38,10 +39,16 @@ function RegisterPage() {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("photo", input.photo);
+      formData.append("name", input.name);
+      formData.append("username", input.username);
+      formData.append("email", input.email);
+      formData.append("password", input.password);
       const { data } = await axios({
         method: "POST",
         url: "http://localhost:3000/auth/register",
-        data: input,
+        data: formData,
       });
       setInputRegister({
         fullName: "",
@@ -145,7 +152,6 @@ function RegisterPage() {
                 <Form.Group controlId="formGridAddress">
                   <Form.Control
                     name="photo"
-                    value={input.photo}
                     onChange={handleOnChange}
                     type="file"
                     className="mb-3"

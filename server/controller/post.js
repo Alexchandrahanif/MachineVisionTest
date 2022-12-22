@@ -149,6 +149,7 @@ class Controller {
     try {
       const { id } = req.user;
       const { caption, tags } = req.body;
+      console.log(req.file);
       if (!req.file) {
         return res.status(400).json({ message: "Uploaded Image is required" });
       }
