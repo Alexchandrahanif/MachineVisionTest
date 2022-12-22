@@ -17,6 +17,7 @@ function RegisterPage() {
   console.log(input, "<< input formnya");
 
   const handleOnChange = (e) => {
+    setInputRegister(URL.createObjectURL(e.target.files[0]));
     const { name, value } = e.target;
     setInputRegister({
       ...input,
@@ -84,13 +85,10 @@ function RegisterPage() {
           <Col className="col-6 d-flex justify-content-center align-items-center mb-5">
             <Form onSubmit={handleOnSubmit} className="w-75 m-auto">
               <Row className="d-flex justify-content-center align-items-center text-center">
-                <h2>Name</h2>
+                <h2>Register</h2>
               </Row>
               <Row>
                 <Form.Group ontrolId="formGridUsername">
-                  <Form.Label className="text-black d-flex justify-content-start">
-                    Name
-                  </Form.Label>
                   <Form.Control
                     name="name"
                     value={input.name}
@@ -102,9 +100,6 @@ function RegisterPage() {
                   />
                 </Form.Group>
                 <Form.Group controlId="formGridEmail">
-                  <Form.Label className="text-black d-flex justify-content-start">
-                    Username
-                  </Form.Label>
                   <Form.Control
                     name="username"
                     value={input.username}
@@ -116,9 +111,6 @@ function RegisterPage() {
                   />
                 </Form.Group>
                 <Form.Group controlId="formGridPassword">
-                  <Form.Label className="text-black d-flex justify-content-start">
-                    Email
-                  </Form.Label>
                   <Form.Control
                     name="email"
                     value={input.email}
@@ -130,9 +122,6 @@ function RegisterPage() {
                   />
                 </Form.Group>
                 <Form.Group controlId="formGridPhoneNumber">
-                  <Form.Label className="text-black d-flex justify-content-start">
-                    Password
-                  </Form.Label>
                   <Form.Control
                     name="password"
                     value={input.password}
@@ -144,18 +133,18 @@ function RegisterPage() {
                   />
                 </Form.Group>
                 <Form.Group controlId="formGridAddress">
-                  <Form.Label className="text-black d-flex justify-content-start">
-                    Photo
-                  </Form.Label>
                   <Form.Control
                     name="photo"
                     value={input.photo}
                     onChange={handleOnChange}
-                    type="text"
-                    placeholder="Photo"
+                    type="file"
                     className="mb-3"
-                    autoComplete="off"
                   />
+                </Form.Group>
+                <Form.Group>
+                  <div>
+                    <img alt="not fount" width={"100px"} src={input.photo} />
+                  </div>
                 </Form.Group>
               </Row>
               <Col className="d-flex justify-content-center align-items-center">

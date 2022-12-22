@@ -99,6 +99,7 @@ class Controller {
         message: "Successfully logged in",
         data: {
           token: access_token,
+          id: dataUser.id,
         },
       });
     } catch (error) {
