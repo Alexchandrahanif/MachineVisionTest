@@ -5,6 +5,7 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import PostPage from "../pages/PostPage";
 import RegisterPage from "../pages/RegisterPage";
+import UploadAndDisplayImage from "../pages/tes";
 import UserPage from "../pages/UserPage";
 
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/change",
         element: <ChangePasswordPage />,
+      },
+      {
+        path: "/upload",
+        element: <UploadAndDisplayImage />,
       },
     ],
   },

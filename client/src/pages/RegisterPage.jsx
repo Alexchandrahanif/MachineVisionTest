@@ -6,6 +6,7 @@ import axios from "axios";
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState(null);
   const [input, setInputRegister] = useState({
     name: "",
     username: "",
@@ -17,12 +18,21 @@ function RegisterPage() {
   console.log(input, "<< input formnya");
 
   const handleOnChange = (e) => {
-    setInputRegister(URL.createObjectURL(e.target.files[0]));
     const { name, value } = e.target;
-    setInputRegister({
-      ...input,
-      [name]: value,
-    });
+    if (e.target.files && e.target.files[0]) {
+      console.log(e.target);
+      let img = e.target.files[0];
+      console.log(img, "igggggg");
+      setInputRegister({
+        ...input,
+        [name]: URL.createObjectURL(img),
+      });
+    } else {
+      setInputRegister({
+        ...input,
+        [name]: value,
+      });
+    }
   };
 
   const handleOnSubmit = async (e) => {
@@ -143,7 +153,15 @@ function RegisterPage() {
                 </Form.Group>
                 <Form.Group>
                   <div>
-                    <img alt="not fount" width={"100px"} src={input.photo} />
+                    {selectedImage && (
+                      <div>
+                        <img
+                          alt="not fount"
+                          width={"150px"}
+                          src={URL.createObjectURL(selectedImage)}
+                        />
+                      </div>
+                    )}
                   </div>
                 </Form.Group>
               </Row>
