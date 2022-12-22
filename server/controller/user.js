@@ -265,7 +265,28 @@ class Controller {
   //Upload image
   static async image(req, res, next) {
     try {
-      const { file } = req.body;
+      if (!req.file) {
+        return res.status(400).json({ message: "Uploaded Image is required" });
+      }
+
+      let uploadedFile = UploadApiResponse;
+
+      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploadFoto",
+        resource_type: "auto",
+      });
+      const { secure_url } = uploadedFile;
+      res.status(200).json({
+        success: true,
+        message: "Successfully Upload Image",
+        data: {
+          id: "1",
+          url: `http://localhost:3000/file/${secure_url}`,
+          filename: "fotobaru.jpg",
+          linkImage: secure_url,
+          mimetype: "image/jpg",
+        },
+      });
     } catch (error) {
       next(error);
     }
