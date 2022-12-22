@@ -60,14 +60,83 @@ class Controller {
   static async getPost(req, res, next) {
     try {
       const { id } = req.params;
-      const dataPost = await Post.findByPk(id);
+      const dataPost = await Post.findOne({
+        where: {
+          id,
+        },
+        include: {
+          model: User,
+          attributes: {
+            exclude: "password",
+          },
+        },
+      });
       if (!dataPost) {
         throw { name: "Data Post Not Found", id: id };
       }
       res.status(200).json({
+        success: true,
+        message: "Successfully Get Post",
         data: dataPost,
       });
     } catch (error) {
+      next(error);
+    }
+  }
+
+  //GET POST BY USER ID
+  static async getPostByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+      let pagination = {
+        limit: 8,
+        include: {
+          model: User,
+          attributes: {
+            exclude: "password",
+          },
+        },
+      };
+      let { page } = req.query;
+      if (page) {
+        pagination.offset = (page - 1) * 8;
+      }
+      let { search } = req.query;
+      if (search) {
+        pagination = {
+          where: {
+            caption: {
+              [Op.iLike]: `%${search}%`,
+            },
+            id,
+          },
+        };
+      }
+      if (search) {
+        pagination = {
+          where: {
+            tags: {
+              [Op.iLike]: `%${search}%`,
+            },
+            id,
+          },
+        };
+      }
+
+      let dataPost = await Post.findAndCountAll(pagination);
+
+      let totalPage = Math.ceil(dataPost.count / 8);
+      res.status(200).json({
+        statusCode: 200,
+        data: dataPost.rows,
+        pagination: {
+          total: dataPost.count,
+          page: totalPage,
+          limit: 8,
+        },
+      });
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   }

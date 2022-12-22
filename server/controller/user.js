@@ -121,21 +121,21 @@ class Controller {
   static async getUser(req, res, next) {
     try {
       const { id } = req.params;
-      const dataUser = await User.findByPk(id);
+      const dataUser = await User.findOne({
+        where: {
+          id,
+        },
+        attributes: {
+          exclude: "password",
+        },
+      });
       if (!dataUser) {
         throw { name: "Data User Not Found", id: id };
       }
       res.status(200).json({
         success: true,
         message: "Successfully Get User",
-        data: {
-          name: dataUser.name,
-          username: dataUser.username,
-          email: dataUser.email,
-          photo: dataUser.photo,
-          createdAt: dataUser.createdAt,
-          updatedAt: dataUser.updatedAt,
-        },
+        data: dataUser,
       });
     } catch (error) {
       console.log(error);
@@ -202,7 +202,7 @@ class Controller {
     }
   }
 
-  // Change Password
+  // Change Password // Done
   static async changePassword(req, res, next) {
     try {
       console.log("okeu");

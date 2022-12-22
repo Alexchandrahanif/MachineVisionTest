@@ -21,11 +21,6 @@ const router = createBrowserRouter([
     // loader: () => {
     //   if (!localStorage.getItem("access_token")) {
     //     throw redirect("/login");
-    //   } else if (
-    //     localStorage.getItem("access_token") &&
-    //     !localStorage.getItem("restoId")
-    //   ) {
-    //     throw redirect("/register-resto");
     //   }
     // },
     children: [
