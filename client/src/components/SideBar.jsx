@@ -30,10 +30,11 @@ function SideBar() {
   return (
     <nav
       id="sidebarMenu"
-      className="col-md-3 col-lg-2 d-md-block sidebar collapse position-absolute"
+      className="col-md-3 col-lg-2 d-md-block sidebar collapse"
       style={{
         backgroundColor: "#F2E7D5",
         minHeight: "100vh",
+        position: "fixed",
       }}
     >
       <div className="position-sticky pt-1 sidebar-sticky">

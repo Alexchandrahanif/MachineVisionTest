@@ -37,6 +37,8 @@ const handeError = (err, req, res, next) => {
     (code = 400), (message = "Invalid Password");
   } else if (err.name === "Data Post Not Found") {
     (code = 400), (message = `Data Post With Id ${err.id} Not Found`);
+  } else if (err.name === "Uploaded Image is required") {
+    (code = 400), (message = "Uploaded Image is required");
   }
   res.status(code).json({
     success: false,

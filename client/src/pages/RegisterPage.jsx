@@ -21,9 +21,7 @@ function RegisterPage() {
     const { name, value } = e.target;
     if (e.target.files && e.target.files[0]) {
       setSelectedImage(e.target.files[0]);
-      console.log(e.target);
       let img = e.target.files[0];
-      console.log(img, "igggggg");
       setInputRegister({
         ...input,
         [name]: img,

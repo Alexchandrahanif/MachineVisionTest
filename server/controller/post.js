@@ -1,4 +1,4 @@
-const { Post, User } = require("../models/index");
+const { Post, User, UserLiked } = require("../models/index");
 const { Op } = require("sequelize");
 
 const cloudinary = require("cloudinary").v2;
@@ -282,6 +282,7 @@ class Controller {
     try {
       const { id } = req.params;
       const { likes } = req.query;
+      const UserId = req.user.id;
 
       const dataPost = await Post.findByPk(id);
       if (!dataPost) {
@@ -299,9 +300,14 @@ class Controller {
           }
         );
       }
+
+      const data = await UserLiked.create({
+        PostId: req.params,
+        UserId,
+      });
       res.status(200).json({
         status: true,
-        message: "",
+        message: "Successfully Like Post",
         data: null,
       });
     } catch (error) {
@@ -318,7 +324,7 @@ class Controller {
       if (!dataPost) {
         throw { name: "Data Post Not Found", id: id };
       }
-      if (likes === "dislike") {
+      if (likes === "unlike") {
         Post.decrement(
           {
             likes: 1,
@@ -330,9 +336,16 @@ class Controller {
           }
         );
       }
+
+      const data = await UserLiked.destroy({
+        where: {
+          UserId: UserId,
+          PostId: id,
+        },
+      });
       res.status(200).json({
         status: true,
-        message: "",
+        message: "Successfully Unlike Post",
         data: null,
       });
     } catch (error) {
