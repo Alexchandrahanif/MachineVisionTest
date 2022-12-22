@@ -41,6 +41,31 @@ export const getAllPosts = (page, search) => async (dispatch) => {
   }
 };
 
+export const getPost = (id) => async (dispatch) => {
+  try {
+    let { data } = await axios.get(`http://localhost:3000/post/${id}`, {
+      headers: { access_token: localStorage.getItem("access_token") },
+    });
+    dispatch(setPost(data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const editPost = (id, posting) => async (dispatch) => {
+  try {
+    let { data } = await axios.put(
+      `http://localhost:3000/post/${id}`,
+      posting,
+      {
+        headers: { access_token: localStorage.getItem("access_token") },
+      }
+    );
+    dispatch(setPost(data)); // aku gatau ini setPost atau setPosts do
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllMyPosts = (page, search) => async (dispatch) => {
   try {
     let option = "";
@@ -58,13 +83,24 @@ export const getAllMyPosts = (page, search) => async (dispatch) => {
 };
 
 export const createNewPost = (posting) => async (dispatch) => {
-  console.log(posting, "data brooo");
   try {
     let { data } = await axios.post(`http://localhost:3000/post`, posting, {
       headers: { access_token: localStorage.getItem("access_token") },
     });
 
     if (data) dispatch(getAllMyPosts(1));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deletePost = (id) => async (dispatch) => {
+  try {
+    let { data } = await axios.delete(`http://localhost:3000/post/${id}`, {
+      headers: { access_token: localStorage.getItem("access_token") },
+    });
+
+    // if (data) dispatch(getAllMyPosts(1));
   } catch (error) {
     console.log(error);
   }

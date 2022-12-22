@@ -27,7 +27,7 @@ class Controller {
     try {
       let { name, username, email, password } = req.body;
       if (!req.file) {
-        return res.status(400).json({ message: "Uploaded Image is required" });
+        throw { name: "Uploaded Image is required" };
       }
 
       let uploadedFile = UploadApiResponse;
@@ -162,7 +162,20 @@ class Controller {
   static async editUser(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, username, email, photo } = req.body;
+      const { name, username, email } = req.body;
+
+      console.log(req.file, "dari edit");
+      if (!req.file) {
+        throw { name: "Uploaded Image is required" };
+      }
+
+      let uploadedFile = UploadApiResponse;
+
+      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploadFoto",
+        resource_type: "auto",
+      });
+      const { secure_url } = uploadedFile;
 
       const data = await User.findByPk(id);
       if (!data) {
@@ -173,7 +186,7 @@ class Controller {
           name,
           username,
           email,
-          photo,
+          photo: secure_url,
         },
         {
           where: {

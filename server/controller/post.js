@@ -148,7 +148,7 @@ class Controller {
       const { id } = req.user;
       const { caption, tags } = req.body;
       if (!req.file) {
-        return res.status(400).json({ message: "Uploaded Image is required" });
+        throw { name: "Uploaded Image is required" };
       }
 
       let uploadedFile = UploadApiResponse;
@@ -198,7 +198,7 @@ class Controller {
       const { id } = req.params;
       const { caption, tags } = req.body;
       if (!req.file) {
-        return res.status(400).json({ message: "Uploaded Image is required" });
+        throw { name: "Uploaded Image is required" };
       }
 
       let uploadedFile = UploadApiResponse;
