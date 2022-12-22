@@ -1,6 +1,7 @@
 const handeError = (err, req, res, next) => {
   let code = 500;
   let message = "Internal Server Error";
+  console.log(err);
 
   if (
     err.name === "SequelizeValidationError" ||
@@ -39,6 +40,12 @@ const handeError = (err, req, res, next) => {
     (code = 400), (message = `Data Post With Id ${err.id} Not Found`);
   } else if (err.name === "Uploaded Image is required") {
     (code = 400), (message = "Uploaded Image is required");
+  } else if (err.name === "Like/Unlike Failed") {
+    (code = 400), (message = "Like/Unlike Failed");
+  } else if (err.name === "can't like because already liked") {
+    (code = 400), (message = "can't like because already liked");
+  } else if (err.name === "can't dislike because it hasn't been liked") {
+    (code = 400), (message = "can't dislike because it hasn't been liked");
   }
   res.status(code).json({
     success: false,

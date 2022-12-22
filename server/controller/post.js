@@ -54,7 +54,6 @@ class Controller {
         },
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -139,7 +138,6 @@ class Controller {
         },
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -149,7 +147,6 @@ class Controller {
     try {
       const { id } = req.user;
       const { caption, tags } = req.body;
-      console.log(req.file);
       if (!req.file) {
         return res.status(400).json({ message: "Uploaded Image is required" });
       }
@@ -249,7 +246,6 @@ class Controller {
         },
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -280,14 +276,29 @@ class Controller {
   // LIKE
   static async like(req, res, next) {
     try {
-      const { id } = req.params;
-      const { likes } = req.query;
-      const UserId = req.user.id;
+      const { id } = req.params; // id postingan yg mau di like
+      const { likes } = req.query; // validasi untuk query like
+      const UserId = req.user.id; // id user yg login
 
+      // validasi untuk postingan yg mau di like, ada atau tidak
       const dataPost = await Post.findByPk(id);
       if (!dataPost) {
         throw { name: "Data Post Not Found", id: id };
       }
+
+      // validasi sebelum like 2x
+      const dataLike = await UserLiked.findOne({
+        where: {
+          PostId: id,
+          UserId: UserId,
+        },
+      });
+      // tidak bisa like 2x
+      if (dataLike) {
+        throw { name: "can't like because already liked" };
+      }
+
+      // validasi untuk menambahkan jumlah like
       if (likes === "like") {
         Post.increment(
           {
@@ -299,12 +310,16 @@ class Controller {
             },
           }
         );
+      } else {
+        // kalau query  nya salah
+        throw { name: "Like/Unlike Failed" };
       }
-
+      // menambahkan di tabel konjungsi
       const data = await UserLiked.create({
-        PostId: req.params,
-        UserId,
+        PostId: id,
+        UserId: UserId,
       });
+
       res.status(200).json({
         status: true,
         message: "Successfully Like Post",
@@ -317,13 +332,17 @@ class Controller {
   // UNLIKE
   static async unlike(req, res, next) {
     try {
-      const { id } = req.params;
-      const { likes } = req.query;
+      const { id } = req.params; // id postingan yg mau di like
+      const { likes } = req.query; // untuk menentukan di like atau tidak
+      const UserId = req.user.id; // Id User yg login/ mau like post
 
+      //Validasi postingan nya ada atau tidak
       const dataPost = await Post.findByPk(id);
       if (!dataPost) {
         throw { name: "Data Post Not Found", id: id };
       }
+
+      // Proses mengurangi like
       if (likes === "unlike") {
         Post.decrement(
           {
@@ -335,8 +354,22 @@ class Controller {
             },
           }
         );
+      } else {
+        throw { name: "Like/Unlike Failed" };
       }
 
+      // untuk cek dahulu udah unlike apa belum
+      const dataLike = await UserLiked.findOne({
+        where: {
+          PostId: id,
+          UserId: UserId,
+        },
+      });
+      // setelah di cek, kondisi supaya tidak bisa di unlike 2x
+      if (!dataLike) {
+        throw { name: "can't dislike because it hasn't been liked" };
+      }
+      // menghapus data di tabel kojungsi
       const data = await UserLiked.destroy({
         where: {
           UserId: UserId,

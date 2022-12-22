@@ -110,7 +110,6 @@ class Controller {
   // Logout User //Done
   static async logout(req, res, next) {
     try {
-      console.log("berhasil logout");
       res.status(200).json({
         success: true,
         message: "Successfully logout",
@@ -155,7 +154,6 @@ class Controller {
         data: dataUser,
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
