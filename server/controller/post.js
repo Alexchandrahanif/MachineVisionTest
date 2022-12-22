@@ -1,6 +1,9 @@
 const { Post, User } = require("../models/index");
 const { Op } = require("sequelize");
 
+const cloudinary = require("cloudinary").v2;
+const UploadApiResponse = require("cloudinary").v2;
+
 class Controller {
   // GET POSTS
   static async getPosts(req, res, next) {
@@ -145,12 +148,23 @@ class Controller {
   static async createPost(req, res, next) {
     try {
       const { id } = req.user;
-      const { caption, tags, image } = req.body;
+      const { caption, tags } = req.body;
+      if (!req.file) {
+        return res.status(400).json({ message: "Uploaded Image is required" });
+      }
+
+      let uploadedFile = UploadApiResponse;
+
+      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploadFoto",
+        resource_type: "auto",
+      });
+      const { secure_url } = uploadedFile;
       const dataPost = await Post.create({
         caption,
         tags,
         likes: 0,
-        image,
+        image: secure_url,
         UserId: id,
       });
 
@@ -184,7 +198,18 @@ class Controller {
     try {
       const idU = req.user.id;
       const { id } = req.params;
-      const { caption, tags, image } = req.body;
+      const { caption, tags } = req.body;
+      if (!req.file) {
+        return res.status(400).json({ message: "Uploaded Image is required" });
+      }
+
+      let uploadedFile = UploadApiResponse;
+
+      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploadFoto",
+        resource_type: "auto",
+      });
+      const { secure_url } = uploadedFile;
       const dataPost = await Post.findByPk(id);
       if (!dataPost) {
         throw { name: "Data Post Not Found", id: id };
@@ -193,7 +218,7 @@ class Controller {
         {
           caption,
           tags,
-          image,
+          image: secure_url,
         },
         {
           where: {
@@ -208,9 +233,9 @@ class Controller {
         success: true,
         message: "Successfully Create Post",
         data: {
-          image: dataPost.image,
-          caption: dataPost.caption,
-          tags: dataPost.tags,
+          image: secure_url,
+          caption: caption,
+          tags: tags,
           likes: dataPost.likes,
           createdAt: dataPost.createdAt,
           updatedAt: dataPost.updatedAt,

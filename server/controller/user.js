@@ -3,6 +3,10 @@ const {
   createAccessToken,
   hashingPassword,
 } = require("../helper/helper");
+
+const cloudinary = require("cloudinary").v2;
+const UploadApiResponse = require("cloudinary").v2;
+
 const { User } = require("../models/index");
 
 class Controller {
@@ -21,13 +25,25 @@ class Controller {
   // Register User //Done
   static async register(req, res, next) {
     try {
-      let { name, username, email, password, photo } = req.body;
+      let { name, username, email, password } = req.body;
+      if (!req.file) {
+        return res.status(400).json({ message: "Uploaded Image is required" });
+      }
+
+      let uploadedFile = UploadApiResponse;
+
+      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+        folder: "uploadFoto",
+        resource_type: "auto",
+      });
+      const { secure_url } = uploadedFile;
+
       const dataUser = await User.create({
         name,
         username,
         email,
         password,
-        photo,
+        photo: secure_url,
       });
 
       res.status(201).json({
