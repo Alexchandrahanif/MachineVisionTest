@@ -10,6 +10,7 @@ class Controller {
     try {
       let pagination = {
         limit: 8,
+        order: [["id", "ASC"]],
         include: {
           model: User,
           attributes: {
@@ -24,6 +25,7 @@ class Controller {
       let { search } = req.query;
       if (search) {
         pagination = {
+          ...pagination,
           where: {
             caption: {
               [Op.iLike]: `%${search}%`,
@@ -33,6 +35,7 @@ class Controller {
       }
       if (search) {
         pagination = {
+          ...pagination,
           where: {
             tags: {
               [Op.iLike]: `%${search}%`,
@@ -92,6 +95,7 @@ class Controller {
       const { id } = req.params;
       let pagination = {
         limit: 8,
+        order: [["id", "ASC"]],
         include: {
           model: User,
           attributes: {
@@ -106,21 +110,23 @@ class Controller {
       let { search } = req.query;
       if (search) {
         pagination = {
+          ...pagination,
           where: {
             caption: {
               [Op.iLike]: `%${search}%`,
             },
-            id,
+            UserId: id,
           },
         };
       }
       if (search) {
         pagination = {
+          ...pagination,
           where: {
             tags: {
               [Op.iLike]: `%${search}%`,
             },
-            id,
+            UserId: id,
           },
         };
       }
@@ -196,27 +202,34 @@ class Controller {
     try {
       const idU = req.user.id;
       const { id } = req.params;
-      const { caption, tags } = req.body;
-      if (!req.file) {
-        throw { name: "Uploaded Image is required" };
-      }
+      const { caption, tags, image } = req.body;
+      console.log(req.body);
+      let imageUrl = image;
 
-      let uploadedFile = UploadApiResponse;
-
-      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
-        folder: "uploadFoto",
-        resource_type: "auto",
-      });
-      const { secure_url } = uploadedFile;
       const dataPost = await Post.findByPk(id);
       if (!dataPost) {
         throw { name: "Data Post Not Found", id: id };
       }
+
+      if (dataPost.image !== image) {
+        if (!req.file) {
+          throw { name: "Uploaded Image is required" };
+        }
+        let uploadedFile = UploadApiResponse;
+
+        uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+          folder: "uploadFoto",
+          resource_type: "auto",
+        });
+        const { secure_url } = uploadedFile;
+        imageUrl = secure_url;
+      }
+
       const data = await Post.update(
         {
           caption,
           tags,
-          image: secure_url,
+          image: imageUrl,
         },
         {
           where: {
@@ -231,7 +244,7 @@ class Controller {
         success: true,
         message: "Successfully Create Post",
         data: {
-          image: secure_url,
+          image: imageUrl,
           caption: caption,
           tags: tags,
           likes: dataPost.likes,

@@ -29,6 +29,7 @@ function LoginPage() {
         data: input,
       });
       localStorage.setItem("access_token", data.data.token);
+      localStorage.setItem("userId", data.data.id);
       navigate("/home");
       Swal.fire({
         position: "center",

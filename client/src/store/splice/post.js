@@ -29,12 +29,11 @@ export const getAllPosts = (page, search) => async (dispatch) => {
   try {
     let option = "";
     if (search) option = `&search=${search}`;
-    let { data } = await axios.get(
-      `http://localhost:3000/post?page=${page}` + option,
-      {
-        headers: { access_token: localStorage.getItem("access_token") },
-      }
-    );
+    if (page) option = `page=${page}`;
+    if (search && page) option = `page=${page}&search=${search}`;
+    let { data } = await axios.get(`http://localhost:3000/post?` + option, {
+      headers: { access_token: localStorage.getItem("access_token") },
+    });
     dispatch(setPosts(data));
   } catch (error) {
     console.log(error);
@@ -46,12 +45,14 @@ export const getPost = (id) => async (dispatch) => {
     let { data } = await axios.get(`http://localhost:3000/post/${id}`, {
       headers: { access_token: localStorage.getItem("access_token") },
     });
-    dispatch(setPost(data));
+    console.log(data);
+    return data.data;
+    // dispatch(setPost(data.data));
   } catch (error) {
     console.log(error);
   }
 };
-export const editPost = (id, posting) => async (dispatch) => {
+export const editPost = (id, posting, page) => async (dispatch) => {
   try {
     let { data } = await axios.put(
       `http://localhost:3000/post/${id}`,
@@ -60,7 +61,7 @@ export const editPost = (id, posting) => async (dispatch) => {
         headers: { access_token: localStorage.getItem("access_token") },
       }
     );
-    dispatch(setPost(data)); // aku gatau ini setPost atau setPosts do
+    if (data) dispatch(getAllMyPosts(page));
   } catch (error) {
     console.log(error);
   }
@@ -70,8 +71,11 @@ export const getAllMyPosts = (page, search) => async (dispatch) => {
   try {
     let option = "";
     if (search) option = `&search=${search}`;
+    if (page) option = `page=${page}`;
+    if (search && page) option = `page=${page}&search=${search}`;
+    const id = localStorage.getItem("userId");
     let { data } = await axios.get(
-      `http://localhost:3000/post?page=${page}` + option,
+      `http://localhost:3000/post/user/${id}?` + option,
       {
         headers: { access_token: localStorage.getItem("access_token") },
       }
@@ -82,25 +86,26 @@ export const getAllMyPosts = (page, search) => async (dispatch) => {
   }
 };
 
-export const createNewPost = (posting) => async (dispatch) => {
+export const createNewPost = (posting, page) => async (dispatch) => {
   try {
     let { data } = await axios.post(`http://localhost:3000/post`, posting, {
       headers: { access_token: localStorage.getItem("access_token") },
     });
 
-    if (data) dispatch(getAllMyPosts(1));
+    if (data) dispatch(getAllMyPosts(page));
   } catch (error) {
     console.log(error);
   }
 };
 
-export const deletePost = (id) => async (dispatch) => {
+export const deletePost = (id, page) => async (dispatch) => {
   try {
     let { data } = await axios.delete(`http://localhost:3000/post/${id}`, {
       headers: { access_token: localStorage.getItem("access_token") },
     });
 
-    // if (data) dispatch(getAllMyPosts(1));
+    console.log(data, "dari alexx");
+    if (data) dispatch(getAllMyPosts(page));
   } catch (error) {
     console.log(error);
   }

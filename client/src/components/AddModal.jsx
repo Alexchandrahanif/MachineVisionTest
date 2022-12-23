@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createNewPost } from "../store/splice/post";
 
-function ModalPost({ open, setOpen }) {
+function ModalPost({ open, setOpen, page }) {
   const dispatch = useDispatch();
   const [preview, setPreview] = useState(null);
   // initialisasi
@@ -21,7 +21,6 @@ function ModalPost({ open, setOpen }) {
     if (files && files[0]) {
       setNewPost({ ...newPost, [name]: files[0] });
       setPreview(URL.createObjectURL(files[0]));
-      // formData.append("photo", files[0]);
     } else setNewPost({ ...newPost, [name]: value });
   };
 
@@ -39,7 +38,7 @@ function ModalPost({ open, setOpen }) {
     formData.append("caption", newPost.caption);
     formData.append("image", newPost.image);
     formData.append("tags", newPost.tags);
-    dispatch(createNewPost(formData));
+    dispatch(createNewPost(formData, page));
     setOpen(false);
     handleClose();
   };
@@ -66,7 +65,13 @@ function ModalPost({ open, setOpen }) {
                   onChange={handleChange}
                 />
               </Form.Group>
-              <div style={{ width: "100px", height: "100px" }}>
+              <div
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  marginBottom: "15px",
+                }}
+              >
                 {preview ? (
                   <img
                     src={preview}
