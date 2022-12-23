@@ -9,6 +9,7 @@ import EditModal from "../components/EditModal";
 import { useSelector, useDispatch } from "react-redux";
 import { deletePost, getAllMyPosts, selectMyPosts } from "../store/splice/post";
 import { Typography } from "@mui/material";
+import Swal from "sweetalert2";
 
 function PostPage() {
   const [input, setInput] = useState(false);
@@ -34,8 +35,25 @@ function PostPage() {
     dispatch(getAllMyPosts(null, search));
   };
 
-  const handleDelete = (id) => {
-    dispatch(deletePost(id, page));
+  const handleDelete = async (id) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't deleted this post!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deletePost(id, page));
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   let active = page;

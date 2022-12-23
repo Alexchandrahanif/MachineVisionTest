@@ -46,8 +46,7 @@ function ChangePasswordPage() {
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Oops, something's wrong!",
-        text: error,
+        title: error.response.data.message,
       });
     }
   };

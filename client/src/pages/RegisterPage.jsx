@@ -67,8 +67,7 @@ function RegisterPage() {
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Oops, something's wrong!",
-        text: err,
+        title: err.response.data.message,
       });
     }
   };

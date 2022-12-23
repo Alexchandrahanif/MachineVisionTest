@@ -41,7 +41,7 @@ function LoginPage() {
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: error,
+        title: error.response.data.message,
       });
     }
   };

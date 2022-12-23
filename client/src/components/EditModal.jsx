@@ -56,8 +56,6 @@ function EditModal({ open, setOpen, postId, page }) {
     formData.append("caption", thePost.caption);
     formData.append("image", thePost.image);
     formData.append("tags", thePost.tags);
-
-    console.log(formData, "lohhhhhhh", postId);
     dispatch(editPost(postId, formData, page));
     setOpen(false);
     handleClose();
