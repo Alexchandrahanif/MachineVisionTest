@@ -355,6 +355,18 @@ class Controller {
         throw { name: "Data Post Not Found", id: id };
       }
 
+      // untuk cek dahulu udah unlike apa belum
+      const dataLike = await UserLiked.findOne({
+        where: {
+          PostId: id,
+          UserId: UserId,
+        },
+      });
+      // setelah di cek, kondisi supaya tidak bisa di unlike 2x
+      if (!dataLike) {
+        throw { name: "can't dislike because it hasn't been liked" };
+      }
+
       // Proses mengurangi like
       if (likes === "unlike") {
         Post.decrement(
@@ -371,17 +383,6 @@ class Controller {
         throw { name: "Like/Unlike Failed" };
       }
 
-      // untuk cek dahulu udah unlike apa belum
-      const dataLike = await UserLiked.findOne({
-        where: {
-          PostId: id,
-          UserId: UserId,
-        },
-      });
-      // setelah di cek, kondisi supaya tidak bisa di unlike 2x
-      if (!dataLike) {
-        throw { name: "can't dislike because it hasn't been liked" };
-      }
       // menghapus data di tabel kojungsi
       const data = await UserLiked.destroy({
         where: {
@@ -393,6 +394,29 @@ class Controller {
         status: true,
         message: "Successfully Unlike Post",
         data: null,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async findAllLike(req, res, next) {
+    try {
+      const { id } = req.user;
+      const data = await UserLiked.findAll({
+        where: {
+          UserId: id,
+        },
+        attributes: {
+          exclude: ["UserId", "createdAt", "updatedAt", "id"],
+        },
+      });
+      const data2 = data.map((el) => {
+        return el.PostId;
+      });
+      res.status(200).json({
+        success: true,
+        data: data2,
       });
     } catch (error) {
       next(error);

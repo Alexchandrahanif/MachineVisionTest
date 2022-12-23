@@ -7,6 +7,7 @@ const initialState = {
   posts: [],
   myPosts: [],
   post: {},
+  likes: [],
 };
 
 export const postSlice = createSlice({
@@ -15,6 +16,9 @@ export const postSlice = createSlice({
   reducers: {
     setPost: (state, action) => {
       state.post = action.payload;
+    },
+    setlikes: (state, action) => {
+      state.likes = action.payload;
     },
     setPosts: (state, action) => {
       state.posts = action.payload;
@@ -25,7 +29,7 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setPosts, setPost, setMyPosts } = postSlice.actions;
+export const { setPosts, setlikes, setPost, setMyPosts } = postSlice.actions;
 
 export const getAllPosts = (page, search) => async (dispatch) => {
   try {
@@ -52,6 +56,7 @@ export const getPost = (id) => async (dispatch) => {
     console.log(error);
   }
 };
+
 export const editPost = (id, posting, page) => async (dispatch) => {
   try {
     let { data } = await axios.put(
@@ -135,8 +140,59 @@ export const deletePost = (id, page) => async (dispatch) => {
   }
 };
 
+export const getAllUserLikes = () => async (dispatch) => {
+  try {
+    let { data } = await axios.get(`http://localhost:3000/post/userliked`, {
+      headers: { access_token: localStorage.getItem("access_token") },
+    });
+
+    dispatch(setlikes(data.data));
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: error.response.data.message,
+    });
+  }
+};
+
+export const likePost = (id, page) => async (dispatch) => {
+  console.log(localStorage.getItem("access_token"), "like");
+  try {
+    let { data } = await axios({
+      method: "PUT",
+      url: `http://localhost:3000/post/like/${id}?likes=like`,
+      headers: { access_token: localStorage.getItem("access_token") },
+    });
+
+    dispatch(getAllMyPosts(page));
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: error.response.data.message,
+    });
+  }
+};
+
+export const unlikePost = (id, page) => async (dispatch) => {
+  try {
+    let { data } = await axios({
+      method: "PUT",
+      url: `http://localhost:3000/post/unlike/${id}?likes=unlike`,
+      headers: { access_token: localStorage.getItem("access_token") },
+    });
+
+    dispatch(getAllMyPosts(page));
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: error.response.data.message,
+    });
+  }
+};
+
 export const selectPosts = (state) => state.post.posts;
 export const selectMyPosts = (state) => state.post.myPosts;
 export const selectPost = (state) => state.post.post;
+export const selectUserLike = (state) => state.post.likes;
 
 export default postSlice.reducer;

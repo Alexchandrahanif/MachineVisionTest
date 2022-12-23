@@ -7,22 +7,31 @@ import { useEffect } from "react";
 import { Button, Form, Pagination } from "react-bootstrap";
 import EditModal from "../components/EditModal";
 import { useSelector, useDispatch } from "react-redux";
-import { deletePost, getAllMyPosts, selectMyPosts } from "../store/splice/post";
+import {
+  deletePost,
+  getAllMyPosts,
+  getAllUserLikes,
+  likePost,
+  selectMyPosts,
+  selectUserLike,
+  unlikePost,
+} from "../store/splice/post";
 import { Typography } from "@mui/material";
 import Swal from "sweetalert2";
 
 function PostPage() {
+  const dispatch = useDispatch();
   const [input, setInput] = useState(false);
   const [open, setOpen] = useState(false);
-  const [like, setLike] = useState([]);
-  const dispatch = useDispatch();
-  const { data, pagination } = useSelector(selectMyPosts);
   const [page, setPage] = useState(1);
   const [postId, setPostId] = useState(null);
   const [search, setSearch] = useState("");
+  const likes = useSelector(selectUserLike);
+  const { data, pagination } = useSelector(selectMyPosts);
 
   useEffect(() => {
     dispatch(getAllMyPosts(page));
+    dispatch(getAllUserLikes());
   }, [page]);
 
   const handleEdit = (id) => {
@@ -33,6 +42,14 @@ function PostPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(getAllMyPosts(null, search));
+  };
+
+  const handleLike = (id) => {
+    dispatch(likePost(id, page));
+  };
+
+  const handleUnlike = (id) => {
+    dispatch(unlikePost(id, page));
   };
 
   const handleDelete = async (id) => {
@@ -135,13 +152,14 @@ function PostPage() {
                         }}
                       >
                         <Typography
-                          onClick={() => setLike([...like, value.id])}
                           style={{ fontSize: "16px", cursor: "pointer" }}
                         >
-                          {like.includes(value.id) ? (
-                            <HiHeart />
+                          {likes.includes(value.id) ? (
+                            <HiHeart onClick={() => handleUnlike(value.id)} />
                           ) : (
-                            <HiOutlineHeart />
+                            <HiOutlineHeart
+                              onClick={() => handleLike(value.id)}
+                            />
                           )}
                         </Typography>
                         <Typography>{value.likes}</Typography>

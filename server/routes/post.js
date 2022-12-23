@@ -5,6 +5,7 @@ const upload = require("../middleware/multer");
 const postRouter = require("express").Router();
 
 postRouter.get("/", authentication, Controller.getPosts);
+postRouter.get("/userliked", authentication, Controller.findAllLike);
 postRouter.get("/:id", authentication, Controller.getPost);
 postRouter.get("/user/:id", authentication, Controller.getPostByUserId);
 postRouter.post(
