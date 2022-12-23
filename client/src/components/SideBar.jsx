@@ -41,7 +41,7 @@ function SideBar() {
         <ul className="nav flex-column d-flex justify-content-start ">
           <li className="nav-item d-flex justify-content-start">
             <Nav.Link
-              onClick={() => navigate(`/home`)}
+              onClick={() => navigate(`/`)}
               className="nav-link text-black small p-1 mb-1"
             >
               Home

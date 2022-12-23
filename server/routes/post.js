@@ -1,5 +1,6 @@
 const Controller = require("../controller/post");
 const authentication = require("../middleware/authentication");
+const Authorization = require("../middleware/authorizationPost");
 const upload = require("../middleware/multer");
 
 const postRouter = require("express").Router();
@@ -17,10 +18,12 @@ postRouter.post(
 postRouter.put(
   "/:id",
   authentication,
+  Authorization,
   upload.single("image"),
+
   Controller.editPost
 );
-postRouter.delete("/:id", authentication, Controller.deletePost);
+postRouter.delete("/:id", authentication, Authorization, Controller.deletePost);
 postRouter.put("/like/:id", authentication, Controller.like);
 postRouter.put("/unlike/:id", authentication, Controller.unlike);
 

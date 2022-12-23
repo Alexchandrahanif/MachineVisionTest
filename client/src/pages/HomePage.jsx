@@ -57,6 +57,7 @@ function HomePage() {
             name="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            autoComplete="off"
           />
           <Button variant="outline-secondary" type="submit">
             Search

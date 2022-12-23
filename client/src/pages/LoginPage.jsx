@@ -30,7 +30,7 @@ function LoginPage() {
       });
       localStorage.setItem("access_token", data.data.token);
       localStorage.setItem("userId", data.data.id);
-      navigate("/home");
+      navigate("/");
       Swal.fire({
         position: "center",
         icon: "success",
