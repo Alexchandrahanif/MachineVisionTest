@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Pagination } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllPosts, selectPosts } from "../store/splice/post";
+import {
+  getAllPosts,
+  getAllUserLikes,
+  likePost,
+  selectPosts,
+  selectUserLike,
+  unlikePost,
+} from "../store/splice/post";
 import { HiOutlineHeart, HiHeart } from "react-icons/hi";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { Typography } from "@mui/material";
@@ -10,16 +17,25 @@ function HomePage() {
   const dispatch = useDispatch();
   const { data, pagination } = useSelector(selectPosts);
   const [page, setPage] = useState(1);
-  const [like, setLike] = useState([]);
+  const likes = useSelector(selectUserLike);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     dispatch(getAllPosts(page));
+    dispatch(getAllUserLikes());
   }, [page]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(getAllPosts(null, search));
+  };
+
+  const handleLike = (id) => {
+    dispatch(likePost(id, page));
+  };
+
+  const handleUnlike = (id) => {
+    dispatch(unlikePost(id, page));
   };
 
   let active = page;
@@ -90,7 +106,6 @@ function HomePage() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
                   }}
                 >
                   <div
@@ -101,23 +116,28 @@ function HomePage() {
                     }}
                   >
                     <Typography
-                      onClick={() => setLike([...like, value.id])}
-                      style={{ fontSize: "16px", cursor: "pointer" }}
+                      style={{
+                        fontSize: "20px",
+                        cursor: "pointer",
+                        color: "red",
+                      }}
                     >
-                      {like.includes(value.id) ? (
-                        <HiHeart />
+                      {likes.includes(value.id) ? (
+                        <HiHeart onClick={() => handleUnlike(value.id)} />
                       ) : (
-                        <HiOutlineHeart />
+                        <HiOutlineHeart onClick={() => handleLike(value.id)} />
                       )}
                     </Typography>
-                    <Typography>{value.likes}</Typography>
+                    <Typography style={{ fontSize: "14px", color: "#424242" }}>
+                      {value.likes} likes
+                    </Typography>
                   </div>
                 </div>
                 <div>
                   <Typography style={{ fontWeight: "bold", fontSize: "16px" }}>
                     {value.User.username}
                   </Typography>
-                  <Typography style={{ fontSize: "12px" }}>
+                  <Typography style={{ fontSize: "12px", color: "#757575" }}>
                     {value.caption}
                   </Typography>
                 </div>

@@ -1,9 +1,23 @@
 [
   {
-    "name": "Alex Chandra Hanif",
-    "username": "alexchandrahanif",
+    "name": "Alex",
+    "username": "alex",
     "email": "alex@gmail.com",
     "password": "12345",
-    "photo": "https://google.png"
+    "photo": "https://analisaaceh.com/wp-content/uploads/2021/12/Profile-whatsapp-3.jpg"
+  },
+  {
+    "name": "Chandra",
+    "username": "chandra",
+    "email": "chandra@gmail.com",
+    "password": "12345",
+    "photo": "https://baladena.id/wp-content/uploads/2020/01/profil-scaled.jpg"
+  },
+  {
+    "name": "Hanif",
+    "username": "hanif",
+    "email": "hanif@gmail.com",
+    "password": "12345",
+    "photo": "https://empatdio.com/wp-content/uploads/2021/01/foto-profil-wa4.jpg"
   }
 ]

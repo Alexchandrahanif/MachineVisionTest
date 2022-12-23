@@ -1,57 +1,55 @@
 import axios from "axios";
+import { useEffect } from "react";
 import { useState } from "react";
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
+import { HiPhoto } from "react-icons/hi2";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { editUser, getUser, selectUser } from "../store/splice/user";
 
 function UserPage() {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const [preview, setPreview] = useState(null);
   const [input, setInput] = useState({
     name: "",
     username: "",
     email: "",
     photo: "",
   });
-  console.log(input);
+  const [isEdit, setIsEdit] = useState(false);
 
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setInput({
-      ...input,
-      [name]: value,
-    });
-  };
-
-  const handleOnSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await axios({
-        method: "PATCH",
-        url: `http://localhost:3000/user/change-password`,
-        data: input,
-        headers: {
-          access_token: localStorage.getItem("access_token"),
-        },
-      });
+  useEffect(() => {
+    dispatch(getUser()).then((value) => {
+      console.log(value, "user");
       setInput({
-        oldPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
+        name: value.name,
+        username: value.username,
+        email: value.email,
+        photo: value.photo,
       });
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Change Password Success!",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops, something's wrong!",
-        text: error,
-      });
-    }
+      setPreview(value.photo);
+    });
+  }, [isEdit]);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files && files[0]) {
+      setInput({ ...input, [name]: files[0] });
+      setPreview(URL.createObjectURL(files[0]));
+    } else setInput({ ...input, [name]: value });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("name", input.name);
+    formData.append("username", input.username);
+    formData.append("email", input.email);
+    formData.append("photo", input.photo);
+    dispatch(editUser(formData));
+  };
+
   return (
     <Container className="justify-content-center align-items-center">
       <Row className=" justify-content-center align-items-center">
@@ -60,58 +58,102 @@ function UserPage() {
         </div>
         <Col className="d-flex col-6 justify-content-center p-4">
           <div className="d-flex justify-content-center align-items-center p-2">
-            <Form onSubmit={handleOnSubmit}>
+            <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Control
                   name="name"
                   value={input.name}
-                  onChange={handleOnChange}
+                  onChange={handleChange}
                   type="text"
                   placeholder="Name"
                   className="mb-3"
                   autoComplete="off"
+                  style={{
+                    pointerEvents: isEdit ? "" : "none",
+                    backgroundColor: isEdit ? "" : "#eceff1",
+                  }}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Control
                   name="username"
                   value={input.username}
-                  onChange={handleOnChange}
+                  onChange={handleChange}
                   type="text"
                   placeholder="Username"
                   className="mb-3"
                   autoComplete="off"
+                  style={{
+                    pointerEvents: isEdit ? "" : "none",
+                    backgroundColor: isEdit ? "" : "#eceff1",
+                  }}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Control
                   name="email"
                   value={input.email}
-                  onChange={handleOnChange}
+                  onChange={handleChange}
                   type="text"
                   placeholder="Email"
                   className="mb-3"
                   autoComplete="off"
+                  style={{
+                    pointerEvents: isEdit ? "" : "none",
+                    backgroundColor: isEdit ? "" : "#eceff1",
+                  }}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Control
                   name="photo"
-                  value={input.photo}
-                  onChange={handleOnChange}
+                  onChange={handleChange}
                   type="file"
                   placeholder="photo"
                   className="mb-3"
                   autoComplete="off"
+                  style={{
+                    pointerEvents: isEdit ? "" : "none",
+                    backgroundColor: isEdit ? "" : "#eceff1",
+                  }}
                 />
               </Form.Group>
+              <div
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  marginBottom: "15px",
+                }}
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt=""
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <HiPhoto style={{ width: "100%", height: "100%" }} />
+                )}
+              </div>
               <div className="d-flex justify-content-evenly">
-                <Button variant="success" type="submit">
-                  Edit
-                </Button>
-                <Button variant="primary" type="submit">
-                  Submit
-                </Button>
+                {isEdit ? (
+                  <Button variant="secondary" onClick={() => setIsEdit(false)}>
+                    cancel
+                  </Button>
+                ) : (
+                  <Button variant="success" onClick={() => setIsEdit(true)}>
+                    Edit
+                  </Button>
+                )}
+                {isEdit ? (
+                  <Button variant="primary" type="submit">
+                    Submit
+                  </Button>
+                ) : (
+                  <Button variant="secondary" type="submit" disabled>
+                    Submit
+                  </Button>
+                )}
               </div>
             </Form>
           </div>

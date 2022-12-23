@@ -3,13 +3,8 @@ import Modal from "@mui/material/Modal";
 import { Button, Form } from "react-bootstrap";
 import { HiPhoto } from "react-icons/hi2";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  createNewPost,
-  editPost,
-  getPost,
-  selectPost,
-} from "../store/splice/post";
+import { useDispatch } from "react-redux";
+import { editPost, getPost } from "../store/splice/post";
 import { useEffect } from "react";
 import Loading from "./Loading";
 

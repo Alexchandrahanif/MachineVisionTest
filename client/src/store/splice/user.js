@@ -32,19 +32,22 @@ export const getAllUser = () => async (dispatch) => {
   }
 };
 
-export const getUser = (id) => async (dispatch) => {
+export const getUser = () => async (dispatch) => {
   try {
+    let id = localStorage.getItem("userId");
     let { data } = await axios.get(`http://localhost:3000/user/${id}`, {
       headers: { access_token: localStorage.getItem("access_token") },
     });
-    dispatch(setUser(data));
+    // dispatch(setUser(data.data));
+    return data.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const editUser = (id, dataDiri) => async (dispatch) => {
+export const editUser = (dataDiri) => async (dispatch) => {
   try {
+    let id = localStorage.getItem("userId");
     let { data } = await axios.put(
       `http://localhost:3000/user/${id}`,
       dataDiri,

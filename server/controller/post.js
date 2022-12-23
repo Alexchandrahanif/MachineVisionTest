@@ -93,6 +93,7 @@ class Controller {
   static async getPostByUserId(req, res, next) {
     try {
       const { id } = req.params;
+      console.log(id);
       let pagination = {
         limit: 8,
         order: [["id", "ASC"]],
@@ -102,6 +103,9 @@ class Controller {
             exclude: "password",
           },
         },
+        where: {
+          UserId: id,
+        },
       };
       let { page } = req.query;
       if (page) {
@@ -109,25 +113,19 @@ class Controller {
       }
       let { search } = req.query;
       if (search) {
-        pagination = {
-          ...pagination,
-          where: {
-            caption: {
-              [Op.iLike]: `%${search}%`,
-            },
-            UserId: id,
+        pagination.where = {
+          tags: {
+            [Op.iLike]: `%${search}%`,
           },
+          UserId: id,
         };
       }
       if (search) {
-        pagination = {
-          ...pagination,
-          where: {
-            tags: {
-              [Op.iLike]: `%${search}%`,
-            },
-            UserId: id,
+        pagination.where = {
+          caption: {
+            [Op.iLike]: `%${search}%`,
           },
+          UserId: id,
         };
       }
 

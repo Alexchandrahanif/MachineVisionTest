@@ -165,6 +165,8 @@ export const likePost = (id, page) => async (dispatch) => {
     });
 
     dispatch(getAllMyPosts(page));
+    dispatch(getAllPosts(page));
+    dispatch(getAllUserLikes());
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -182,6 +184,8 @@ export const unlikePost = (id, page) => async (dispatch) => {
     });
 
     dispatch(getAllMyPosts(page));
+    dispatch(getAllPosts(page));
+    dispatch(getAllUserLikes());
   } catch (error) {
     Swal.fire({
       icon: "error",

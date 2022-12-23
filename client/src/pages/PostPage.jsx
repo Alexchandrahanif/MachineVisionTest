@@ -152,7 +152,11 @@ function PostPage() {
                         }}
                       >
                         <Typography
-                          style={{ fontSize: "16px", cursor: "pointer" }}
+                          style={{
+                            fontSize: "20px",
+                            cursor: "pointer",
+                            color: "red",
+                          }}
                         >
                           {likes.includes(value.id) ? (
                             <HiHeart onClick={() => handleUnlike(value.id)} />

@@ -162,31 +162,32 @@ class Controller {
   static async editUser(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, username, email } = req.body;
-
-      console.log(req.file, "dari edit");
-      if (!req.file) {
-        throw { name: "Uploaded Image is required" };
-      }
-
-      let uploadedFile = UploadApiResponse;
-
-      uploadedFile = await cloudinary.uploader.upload(req.file.path, {
-        folder: "uploadFoto",
-        resource_type: "auto",
-      });
-      const { secure_url } = uploadedFile;
-
+      const { name, username, email, photo } = req.body;
+      let urlPhoto = photo;
       const data = await User.findByPk(id);
       if (!data) {
         throw { name: "Data User Not Found", id: id };
       }
+      if (data.photo !== photo) {
+        if (!req.file) {
+          throw { name: "Uploaded Image is required" };
+        }
+        let uploadedFile = UploadApiResponse;
+
+        uploadedFile = await cloudinary.uploader.upload(req.file.path, {
+          folder: "uploadFoto",
+          resource_type: "auto",
+        });
+        const { secure_url } = uploadedFile;
+        urlPhoto = secure_url;
+      }
+
       const dataUser = await User.update(
         {
           name,
           username,
           email,
-          photo: secure_url,
+          photo: urlPhoto,
         },
         {
           where: {
