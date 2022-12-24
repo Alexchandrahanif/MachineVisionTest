@@ -43,7 +43,7 @@
    - edit post
 6. logout
 
-## menjalankan aplikasi => Buka terminal
+## Menjalankan aplikasi => Buka terminal
 
 ### Server
 
@@ -89,4 +89,4 @@
 3. begitu juga saat edit post, delete post, user tidak boleh meng-edit dan delete post user lain, di validasi di server dan client
 4. untuk upload foto/image saya menggunakan multer dan cloudinary
 5. untuk RestAPI Like, sudah divalidasi di server, tidak bolek like 2 kali
-6. begitu RestApi Unlike, tidak boleh Unlike sebelum like atau Unlike 2x
+6. begitupun RestApi Unlike, tidak boleh Unlike sebelum like atau Unlike 2x

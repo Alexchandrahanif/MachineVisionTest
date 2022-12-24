@@ -65,7 +65,7 @@ function PostPage() {
       }).then((result) => {
         if (result.isConfirmed) {
           dispatch(deletePost(id, page));
-          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+          Swal.fire("Deleted!", "Your post has been deleted.", "success");
         }
       });
     } catch (error) {
@@ -167,7 +167,9 @@ function PostPage() {
                             />
                           )}
                         </Typography>
-                        <Typography>{value.likes}</Typography>
+                        <Typography style={{ fontSize: "13px" }}>
+                          {value.likes} likes
+                        </Typography>
                       </div>
                       <div
                         style={{

@@ -24,28 +24,30 @@ class Controller {
       }
       let { search } = req.query;
       if (search) {
-        pagination = {
-          ...pagination,
-          where: {
-            caption: {
-              [Op.iLike]: `%${search}%`,
-            },
+        pagination.where = {
+          tags: {
+            [Op.iLike]: `%${search}%`,
           },
         };
       }
+      let postTags = await Post.findAndCountAll(pagination);
+
       if (search) {
-        pagination = {
-          ...pagination,
-          where: {
-            tags: {
-              [Op.iLike]: `%${search}%`,
-            },
+        pagination.where = {
+          caption: {
+            [Op.iLike]: `%${search}%`,
           },
         };
       }
+      let postCaption = await Post.findAndCountAll(pagination);
 
-      let dataPost = await Post.findAndCountAll(pagination);
-
+      let dataPost = {};
+      if (search) {
+        dataPost.rows = [...postCaption.rows, ...postTags.rows];
+        dataPost.count = postCaption.count + postTags.count;
+      } else {
+        dataPost = await Post.findAndCountAll(pagination);
+      }
       let totalPage = Math.ceil(dataPost.count / 8);
       res.status(200).json({
         statusCode: 200,
@@ -117,9 +119,12 @@ class Controller {
           tags: {
             [Op.iLike]: `%${search}%`,
           },
+
           UserId: id,
         };
       }
+      let postTags = await Post.findAndCountAll(pagination);
+
       if (search) {
         pagination.where = {
           caption: {
@@ -128,9 +133,15 @@ class Controller {
           UserId: id,
         };
       }
+      let postCaption = await Post.findAndCountAll(pagination);
 
-      let dataPost = await Post.findAndCountAll(pagination);
-
+      let dataPost = {};
+      if (search) {
+        dataPost.rows = [...postCaption.rows, ...postTags.rows];
+        dataPost.count = postCaption.count + postTags.count;
+      } else {
+        dataPost = await Post.findAndCountAll(pagination);
+      }
       let totalPage = Math.ceil(dataPost.count / 8);
       res.status(200).json({
         statusCode: 200,

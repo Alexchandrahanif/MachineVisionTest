@@ -21,34 +21,45 @@ function ChangePasswordPage() {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const { data } = await axios({
-        method: "PATCH",
-        url: `http://localhost:3000/user/change-password`,
-        data: input,
-        headers: {
-          access_token: localStorage.getItem("access_token"),
-        },
-      });
-      setInput({
-        oldPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
-      });
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Change Password Success!",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: error.response.data.message,
-      });
-    }
+    Swal.fire({
+      title: "Are you sure want to update this data?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const { data } = await axios({
+            method: "PATCH",
+            url: `http://localhost:3000/user/change-password`,
+            data: input,
+            headers: {
+              access_token: localStorage.getItem("access_token"),
+            },
+          });
+          setInput({
+            oldPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
+          });
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Change Password Success!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: error.response.data.message,
+          });
+        }
+      }
+    });
   };
   return (
     <Container className="justify-content-center align-items-center">

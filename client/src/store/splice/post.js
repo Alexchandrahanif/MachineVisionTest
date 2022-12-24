@@ -32,6 +32,7 @@ export const postSlice = createSlice({
 export const { setPosts, setlikes, setPost, setMyPosts } = postSlice.actions;
 
 export const getAllPosts = (page, search) => async (dispatch) => {
+  console.log(page, "page jugaaa");
   try {
     let option = "";
     if (search) option = `&search=${search}`;

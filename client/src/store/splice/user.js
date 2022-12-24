@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const initialState = {
   users: [],
@@ -46,19 +47,41 @@ export const getUser = () => async (dispatch) => {
 };
 
 export const editUser = (dataDiri) => async (dispatch) => {
-  try {
-    let id = localStorage.getItem("userId");
-    let { data } = await axios.put(
-      `http://localhost:3000/user/${id}`,
-      dataDiri,
-      {
-        headers: { access_token: localStorage.getItem("access_token") },
+  Swal.fire({
+    text: "Are you sure want to update this data?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        let id = localStorage.getItem("userId");
+        let { data } = await axios.put(
+          `http://localhost:3000/user/${id}`,
+          dataDiri,
+          {
+            headers: { access_token: localStorage.getItem("access_token") },
+          }
+        );
+        dispatch(setUser(data));
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Edit User Success!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: error.response.data.message,
+        });
       }
-    );
-    dispatch(setUser(data));
-  } catch (error) {
-    console.log(error);
-  }
+    }
+  });
 };
 
 export const selectUsers = (state) => state.user.users;
